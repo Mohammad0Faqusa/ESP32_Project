@@ -9,15 +9,21 @@ const char SSID[]               = "ZTE_2.4G_EAA2";    // Network SSID (name)
 const char PASS[]               = "13141516";    // Network password (use for WPA, or use as key for WEP)
 const char DEVICE_KEY[]  = "MapxSBqttrKJ?cQ2vfnwpEY!R";    // Secret device password
 
-void onLedChange();
+void onXCloudChange();
+void onYCloudChange();
+void onMiddleButtonChange();
 
-bool led;
+float x_cloud;
+float y_cloud;
+int middle_button;
 
 void initProperties(){
 
   ArduinoCloud.setBoardId(DEVICE_LOGIN_NAME);
   ArduinoCloud.setSecretDeviceKey(DEVICE_KEY);
-  ArduinoCloud.addProperty(led, READWRITE, ON_CHANGE, onLedChange);
+  ArduinoCloud.addProperty(x_cloud, READWRITE, ON_CHANGE, onXCloudChange);
+  ArduinoCloud.addProperty(y_cloud, READWRITE, ON_CHANGE, onYCloudChange);
+  ArduinoCloud.addProperty(middle_button, READWRITE, ON_CHANGE, onMiddleButtonChange);
 
 }
 

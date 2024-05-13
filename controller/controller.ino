@@ -1,6 +1,12 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <WiFi.h>
+#include "thingProperties.h"
+
+const char* ssid = "ZTE_2.4G_EAA2";
+const char* password = "13141516";
+
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64  // Change to 32 if you have a 128x32 display
@@ -19,6 +25,7 @@ int y_min ;
 int y_max ; 
 int x_min ; 
 int x_max ; 
+
 int x , y ; 
 
 int y_cord  , x_cord  ; 
@@ -26,28 +33,76 @@ int y_cord  , x_cord  ;
 int button_state ; 
 
 void setup() {
+   
+  initialize_pins() ; 
+
   Serial.begin(9600);
+
+  wifi_connection() ; 
+
+  cloud_setup() ;   
 
   // Initialize display
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
-    Serial.println(F("SSD1306 allocation failed"));
+    Serial.println(("SSD1306 allocation failed"));
     for(;;);
   }
 
-  // Clear the buffer
-  initialize_pins() ; 
-  
   calibrate_sensors() ; 
 
+  
 }
 
 
 
+
 void loop() {
+  ArduinoCloud.update();
+
   read_analog_sensors() ;
+
   mapping_sensors() ; 
 
-  // Nothing in the loop for this example
+  button_state = !(digitalRead(calibrate_button));
+
+  middle_button = button_state ; 
+
+  display_variables() ; 
+
+  x_cloud = x_cord ; 
+  y_cloud = y_cord ; 
+
+}
+
+void onMiddleButtonChange()  {
+  
+}
+
+
+
+void onXCloudChange()  {
+  
+}
+
+
+void onYCloudChange()  {
+ 
+}
+
+void cloud_setup() {
+
+  initProperties();
+
+  ArduinoCloud.begin(ArduinoIoTPreferredConnection);
+
+  setDebugMessageLevel(2);
+  
+  ArduinoCloud.printDebugInfo(); 
+  
+}
+
+
+void display_variables() {
   display.clearDisplay();
 
   // Set text color to white
@@ -65,7 +120,7 @@ void loop() {
   display.print("the y = ") ; 
   display.println(y_cord) ;
 
-  button_state = !(digitalRead(calibrate_button));
+  
   display.print("Back_sense :");
   display.println("") ; 
   
@@ -74,7 +129,7 @@ void loop() {
 
   // Display buffer contents
   display.display();
-  delay(500) ; 
+  delay(500) ;  
 }
 
 void calibrate_display() {
@@ -84,7 +139,7 @@ void calibrate_display() {
   display.setTextColor(SSD1306_WHITE);
 
   // Set text size
-  display.setTextSize(2);
+  display.setTextSize(1.5);
 
   // Set cursor position
   display.setCursor(0, 0);
@@ -93,16 +148,20 @@ void calibrate_display() {
   display.println("Calibrating");
   
   // Display buffer contents
+  display.print(x_min) ; 
+  display.print(" ") ; 
+  display.println(x_max) ;
+
+  display.println(x) ;  
+  
   display.display();
 
 }
 
 void calibrate_sensors(){
-  	calibrate_display(); 
-     
-    button_state = digitalRead(calibrate_button);
 
   	read_analog_sensors() ; 
+
     y_min = y ; 
     y_max = y ; 
 
@@ -110,14 +169,18 @@ void calibrate_sensors(){
     x_max = x ; 
  
   for(;;) {
+
+    calibrate_display(); 
     
-    button_state = digitalRead(calibrate_button);
+    button_state = !(digitalRead(calibrate_button));
 
     delay(100); 
 
-    if (button_state ==  0 ) 
+    if (button_state !=  0 ) 
       break ; 
     read_analog_sensors() ;   
+
+    display.println(x) ; 
 
     if (x < x_min) 
     	x_min = x ; 
@@ -162,5 +225,47 @@ void mapping_sensors(){
 
    if(x_cord > 235) 
     x_cord = 255 ; 
+  
+}
+
+
+void wifi_connection() {
+
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  delay(1500); 
+
+  initProperties();
+
+  ArduinoCloud.begin(ArduinoIoTPreferredConnection);
+
+  setDebugMessageLevel(2);
+
+  initProperties();
+
+  ArduinoCloud.begin(ArduinoIoTPreferredConnection);
+
+  setDebugMessageLevel(2);
+  ArduinoCloud.printDebugInfo(); 
+
+  // Initialize display
+  if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+    Serial.println(("SSD1306 allocation failed"));
+    for(;;);
+  }
   
 }
