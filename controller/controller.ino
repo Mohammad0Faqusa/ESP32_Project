@@ -14,8 +14,8 @@ const char* password = "13141516";
 #define OLED_RESET    -1 
 #define SCREEN_ADDRESS 0x3C  // OLED display address
 
-#define x_pin 25 
-#define y_pin 26
+#define x_pin 34 
+#define y_pin 35
 #define calibrate_button 5 
 
 
@@ -33,6 +33,8 @@ int y_cord  , x_cord  ;
 int button_state ; 
 
 void setup() {
+
+  
    
   initialize_pins() ; 
 
@@ -57,6 +59,14 @@ void setup() {
 
 
 void loop() {
+
+  while (WiFi.status() != WL_CONNECTED) {
+    display.clearDisplay() ;
+    display.print("connecting ...") ; 
+    display.display() ; 
+    
+  }
+
   ArduinoCloud.update();
 
   read_analog_sensors() ;
@@ -139,7 +149,7 @@ void calibrate_display() {
   display.setTextColor(SSD1306_WHITE);
 
   // Set text size
-  display.setTextSize(1.5);
+  display.setTextSize(1);
 
   // Set cursor position
   display.setCursor(0, 0);
@@ -148,11 +158,21 @@ void calibrate_display() {
   display.println("Calibrating");
   
   // Display buffer contents
-  display.print(x_min) ; 
-  display.print(" ") ; 
+  display.print("x value = ") ; 
+  display.println(x) ; 
+  display.print("The min x = ") ; 
+  display.println(x_min) ; 
+  display.print("The max x = ") ; 
   display.println(x_max) ;
 
-  display.println(x) ;  
+  display.print("y value = ") ; 
+  display.println(y) ; 
+  display.print("The min y = ") ; 
+  display.println(y_min) ; 
+  display.print("The max y = ") ; 
+  display.println(y_max) ;
+
+   
   
   display.display();
 
@@ -211,16 +231,16 @@ void mapping_sensors(){
   
   y_cord = map(y , y_min , y_max , 0 , 500) - 255 ;
 
-  if (y_cord > -30 && y_cord < 30 ) 
+  if (y_cord > -35 && y_cord < 35 ) 
     y_cord = 0 ; 
 
   if(y_cord > 235) 
     y_cord = 255 ; 
 
 
-  x_cord = map(x , y_min , y_max , 0 , 500) - 255 ;
+  x_cord = map(x , x_min , x_max , 0 , 500) - 255 ;
 
-  if (x_cord > -30 && x_cord < 30 ) 
+  if (x_cord > -33 && x_cord < 35 ) 
     x_cord = 0 ; 
 
    if(x_cord > 235) 
@@ -231,41 +251,8 @@ void mapping_sensors(){
 
 void wifi_connection() {
 
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
   }
-
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
-
-  delay(1500); 
-
-  initProperties();
-
-  ArduinoCloud.begin(ArduinoIoTPreferredConnection);
-
-  setDebugMessageLevel(2);
-
-  initProperties();
-
-  ArduinoCloud.begin(ArduinoIoTPreferredConnection);
-
-  setDebugMessageLevel(2);
-  ArduinoCloud.printDebugInfo(); 
-
-  // Initialize display
-  if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
-    Serial.println(("SSD1306 allocation failed"));
-    for(;;);
-  }
-  
 }
