@@ -3,21 +3,30 @@
 #include <ArduinoIoTCloud.h>
 #include <Arduino_ConnectionHandler.h>
 
-const char DEVICE_LOGIN_NAME[]  = "60e1a612-aea6-48ad-8576-728b4bd60a0f";
+const char DEVICE_LOGIN_NAME[]  = "c1bc818f-a71e-4553-9edc-ccbe8f9874e8";
 
 const char SSID[]               = "ZTE_2.4G_EAA2";    // Network SSID (name)
 const char PASS[]               = "13141516";    // Network password (use for WPA, or use as key for WEP)
-const char DEVICE_KEY[]  = "0uwqEIgjBDDXdhdnsRx?Bp16c";    // Secret device password
+const char DEVICE_KEY[]  = "fl0cO6D2kpfS45sXXXpD4Xpbp";    // Secret device password
 
-void onLed2Change();
+void onBackDistanceChange();
+void onXPwmChange();
+void onYPwmChange();
+void onLightChange();
 
-bool led2;
+float back_distance;
+float x_pwm;
+float y_pwm;
+bool light;
 
 void initProperties(){
 
   ArduinoCloud.setBoardId(DEVICE_LOGIN_NAME);
   ArduinoCloud.setSecretDeviceKey(DEVICE_KEY);
-  ArduinoCloud.addProperty(led2, READWRITE, ON_CHANGE, onLed2Change);
+  ArduinoCloud.addProperty(back_distance, READWRITE, ON_CHANGE, onBackDistanceChange);
+  ArduinoCloud.addProperty(x_pwm, READWRITE, ON_CHANGE, onXPwmChange);
+  ArduinoCloud.addProperty(y_pwm, READWRITE, ON_CHANGE, onYPwmChange);
+  ArduinoCloud.addProperty(light, READWRITE, ON_CHANGE, onLightChange);
 
 }
 

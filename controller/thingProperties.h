@@ -3,11 +3,11 @@
 #include <ArduinoIoTCloud.h>
 #include <Arduino_ConnectionHandler.h>
 
-const char DEVICE_LOGIN_NAME[]  = "f6bcf454-70e6-497e-ad5a-7cf9c34912ab";
+const char DEVICE_LOGIN_NAME[]  = "bd133167-1ee8-4d26-80c5-afa45d25cf6c";
 
 const char SSID[]               = "ZTE_2.4G_EAA2";    // Network SSID (name)
 const char PASS[]               = "13141516";    // Network password (use for WPA, or use as key for WEP)
-const char DEVICE_KEY[]  = "MapxSBqttrKJ?cQ2vfnwpEY!R";    // Secret device password
+const char DEVICE_KEY[]  = "dcNZ?Rd!JA9Mu9G8vMb8t60i0";    // Secret device password
 
 void onXCloudChange();
 void onYCloudChange();
@@ -15,7 +15,7 @@ void onMiddleButtonChange();
 
 float x_cloud;
 float y_cloud;
-int middle_button;
+bool middle_button;
 
 void initProperties(){
 

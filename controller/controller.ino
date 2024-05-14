@@ -60,12 +60,6 @@ void setup() {
 
 void loop() {
 
-  while (WiFi.status() != WL_CONNECTED) {
-    display.clearDisplay() ;
-    display.print("connecting ...") ; 
-    display.display() ; 
-    
-  }
 
   ArduinoCloud.update();
 
@@ -74,6 +68,7 @@ void loop() {
   mapping_sensors() ; 
 
   button_state = !(digitalRead(calibrate_button));
+
 
   middle_button = button_state ; 
 
