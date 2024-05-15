@@ -48,7 +48,7 @@ void onXPwmChange()  {
 
 void onYPwmChange()  {
   y_pwm_to_direction() ; 
-  analogWrite(y_pwm_pin , abs(x_pwm)) ; 
+  analogWrite(y_pwm_pin , abs(y_pwm)) ; 
 }
 
 

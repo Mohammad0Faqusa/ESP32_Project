@@ -32,10 +32,9 @@ int y_cord  , x_cord  ;
 
 int button_state ; 
 
+bool toggle_button ;
 void setup() {
 
-  
-   
   initialize_pins() ; 
 
   Serial.begin(9600);
@@ -56,8 +55,6 @@ void setup() {
 }
 
 
-
-
 void loop() {
 
 
@@ -69,8 +66,11 @@ void loop() {
 
   button_state = !(digitalRead(calibrate_button));
 
+  if (button_state) {
+    toggle_button = ! toggle_button ; 
+  }
 
-  middle_button = button_state ; 
+  middle_button = toggle_button ; 
 
   display_variables() ; 
 
@@ -130,7 +130,7 @@ void display_variables() {
   display.println("") ; 
   
   display.print("Lights : ");
-  display.println(button_state) ; 
+  display.println(toggle_button) ; 
 
   // Display buffer contents
   display.display();
