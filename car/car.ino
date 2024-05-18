@@ -18,8 +18,6 @@ const int motor2A = D4;  //INPUT 1 OF DRIVER
 const int motor2B = D5;  // Input 2 OF DRIVER 
 const int motor2Enable = D6;  // ENABLE FOR (BACK , FORWARD ) MOTOR 
 
-const int trigPin = D7 ;
-const int echoPin = D8 ;
 
 const int led_pin = D3 ; 
 
@@ -42,32 +40,46 @@ void setup() {
   ArduinoCloud.printDebugInfo();
 }
 
+int  distance = 0;
+bool back  ; 
 
 void loop() {
 
   ArduinoCloud.update();
 
-  back_distance = getDistance() ; 
+ 
+  delay(100) ; 
 
+  if (Serial.available() >= sizeof(int)) {
+    Serial.readBytes((char*)&distance, sizeof(distance)); // Read distance data from Arduino Uno
+    Serial.print("Received distance: ");
+    Serial.println(distance); // Print received distance
+  }
+
+  delay(100) ; 
+  
+  back_distance = distance ; 
+
+  
+
+  if (back) {
+    if(distance > 20) {
+      analogWrite(motor2Enable , 255 );
+      y_direction(false) ;
+      delay(500) ; 
+      analogWrite(motor2Enable , 0 );
+    }
+    else {
+      go_back = false ; 
+    }
+  }
 
 }
 
-float getDistance() {
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
 
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-
-  float duration = pulseIn(echoPin, HIGH);
-  // Speed of sound in air = 343 m/s or 0.0343 cm/microsecond
-  // Distance = (Time * Speed) / 2
-  float distance = (duration * 0.0343) / 2;
-
-  return distance;
+void onGoBackChange() {
+  back = go_back ; 
 }
-
 
 void onXPwmChange()  {
   // Add your code here to act upon XPwm change
@@ -116,8 +128,6 @@ void initialize_pins() {
   pinMode(motor2B, OUTPUT);
   pinMode(motor2Enable , OUTPUT);
 
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
   pinMode(led_pin , OUTPUT);
 
 }

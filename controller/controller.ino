@@ -18,7 +18,7 @@ const char* password = "13141516";
 #define y_pin 35
 #define calibrate_button 5 
 
-
+ 
 
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
@@ -35,6 +35,9 @@ int y_cord  , x_cord  ;
 int button_state ; 
 
 bool toggle_button ;
+
+float back_d ; 
+
 
 void setup() {
 
@@ -56,6 +59,7 @@ void setup() {
 
   
 }
+
 
 
 void loop() {
@@ -80,6 +84,10 @@ void loop() {
   x_cloud = x_cord ; 
   y_cloud = y_cord ; 
 
+}
+
+void onDistanceChange(){
+  back_d = distance ; 
 }
 
 void onMiddleButtonChange()  {
@@ -130,7 +138,7 @@ void display_variables() {
 
   
   display.print("Back_sense :");
-  display.println(distance) ; 
+  display.println(back_d) ; 
   
   display.print("Lights : ");
   display.println(toggle_button) ; 

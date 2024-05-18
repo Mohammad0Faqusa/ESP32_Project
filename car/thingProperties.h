@@ -3,21 +3,23 @@
 #include <ArduinoIoTCloud.h>
 #include <Arduino_ConnectionHandler.h>
 
-const char DEVICE_LOGIN_NAME[]  = "c1bc818f-a71e-4553-9edc-ccbe8f9874e8";
+const char DEVICE_LOGIN_NAME[]  = "7463fe72-8cdc-4da2-b98a-eae1ee465c3d";
 
 const char SSID[]               = "ZTE_2.4G_EAA2";    // Network SSID (name)
 const char PASS[]               = "13141516";    // Network password (use for WPA, or use as key for WEP)
-const char DEVICE_KEY[]  = "fl0cO6D2kpfS45sXXXpD4Xpbp";    // Secret device password
+const char DEVICE_KEY[]  = "e1ESyR8fS#ryMxY0LmcER6QbK";    // Secret device password
 
 void onBackDistanceChange();
 void onXPwmChange();
 void onYPwmChange();
-void onLightChange();
+void onGoBackChange();
+void onLightCarChange();
 
 float back_distance;
 float x_pwm;
 float y_pwm;
-bool light;
+bool go_back;
+bool light_car;
 
 void initProperties(){
 
@@ -26,7 +28,8 @@ void initProperties(){
   ArduinoCloud.addProperty(back_distance, READWRITE, ON_CHANGE, onBackDistanceChange);
   ArduinoCloud.addProperty(x_pwm, READWRITE, ON_CHANGE, onXPwmChange);
   ArduinoCloud.addProperty(y_pwm, READWRITE, ON_CHANGE, onYPwmChange);
-  ArduinoCloud.addProperty(light, READWRITE, ON_CHANGE, onLightChange);
+  ArduinoCloud.addProperty(go_back, READWRITE, ON_CHANGE, onGoBackChange);
+  ArduinoCloud.addProperty(light_car, READWRITE, ON_CHANGE, onLightCarChange);
 
 }
 
